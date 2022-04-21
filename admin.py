@@ -17,8 +17,6 @@ from threading import Thread
 from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext
 
-validations_db_file = 'validations.db'
-
 validation_code_len = 6
 
 load_dotenv()
@@ -26,6 +24,10 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 if TOKEN is None:
     print("DISCORD_TOKEN env var not set! Exiting")
     exit(1)
+
+bot_home = os.getenv("BOT_HOME") or os.getcwd()
+
+validations_db_file = bot_home + 'validations.db'
 
 _ids = os.getenv('GUILD_IDS') or ""
 _guild_ids = [int(id) for id in _ids.split('.') if id != ""]
@@ -59,7 +61,6 @@ if not os.path.exists(validations_db_file):
     );""")
     con.commit()
     con.close()
-
 
 bot = commands.Bot(command_prefix="/", self_bot=True, intents=discord.Intents.all())
 slash = SlashCommand(bot, sync_commands=True)
