@@ -84,14 +84,14 @@ VALIDATION_STATE_FINISHED = 2
 HOLY_GRAIL_ROLE_ID = os.getenv('ROLE_ID')
 
 def exists_validation(user):
-    con = sqlite3.connect('validations.db')
+    con = sqlite3.connect(validations_db_file)
     cur = con.cursor()
     res = len(cur.execute("SELECT * FROM validations WHERE user = :id", {"id": user}).fetchall()) > 0
     con.close()
     return res
 
 def get_validation(user):
-    con = sqlite3.connect('validations.db')
+    con = sqlite3.connect(validations_db_file)
     cur = con.cursor()
     res = cur.execute("SELECT * FROM validations WHERE user = :id", {"id": user}).fetchone()
     con.close()
@@ -104,21 +104,21 @@ def get_validation(user):
     }
 
 def set_token(user, token):
-    con = sqlite3.connect('validations.db')
+    con = sqlite3.connect(validations_db_file)
     cur = con.cursor()
     res = cur.execute("UPDATE validations SET token=:t WHERE user=:id", {"id": user, "t":token})
     con.commit()
     con.close()
 
 def set_state(user, state):
-    con = sqlite3.connect('validations.db')
+    con = sqlite3.connect(validations_db_file)
     cur = con.cursor()
     res = cur.execute("UPDATE validations SET state=:s WHERE user=:id", {"id": user, "s":state})
     con.commit()
     con.close()
 
 def set_email(user, email):
-    con = sqlite3.connect('validations.db')
+    con = sqlite3.connect(validations_db_file)
     cur = con.cursor()
     res = cur.execute("UPDATE validations SET email=:e WHERE user=:id", {"id": user, "e":email})
     con.commit()
@@ -160,7 +160,7 @@ async def _handle_joined(member: discord.Member):
         app.logger.debug(f"Creating DM with {member.id}")
         _dm = await member.create_dm()
 
-    con = sqlite3.connect('validations.db')
+    con = sqlite3.connect(validations_db_file)
     cur = con.cursor()
     res = cur.execute("INSERT INTO validations VALUES (?, ?, ?, ?, ?)", [member.id, member.guild.id, VALIDATION_STATE_START, "", ""])
     con.commit()
