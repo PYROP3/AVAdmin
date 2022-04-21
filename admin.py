@@ -48,7 +48,7 @@ for guild in guild_ids:
 
 # Initialize db
 if not os.path.exists(validations_db_file):
-    con = sqlite3.connect('validations.db')
+    con = sqlite3.connect(validations_db_file)
     cur = con.cursor()
     cur.execute(f"""
     CREATE TABLE validations (
